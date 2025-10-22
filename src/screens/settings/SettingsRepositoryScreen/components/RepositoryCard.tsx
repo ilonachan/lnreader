@@ -14,10 +14,11 @@ import { Portal } from 'react-native-paper';
 import AddRepositoryModal from './AddRepositoryModal';
 import DeleteRepositoryModal from './DeleteRepositoryModal';
 
+type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 interface RepositoryCardProps {
   repository: Repository;
   refetchRepositories: () => void;
-  upsertRepository: (repositoryUrl: string, repository?: Repository) => void;
+  upsertRepository: (repository: Optional<Repository, 'id'> | string) => void;
 }
 
 const RepositoryCard: FC<RepositoryCardProps> = ({
@@ -64,6 +65,7 @@ const RepositoryCard: FC<RepositoryCardProps> = ({
           }`}
         </Text>
       </View>
+      {/* TODO: toggle button for disabling the repository */}
       <View style={styles.buttonsCtn}>
         <IconButtonV2
           name="open-in-new"

@@ -98,7 +98,7 @@ class LocalStorage {
     this.#pluginID = pluginID;
   }
 
-  get(): StoredItem['value'] | undefined {
+  get(): Record<string, string> | undefined {
     const data = store.getString(this.#pluginID + WEBVIEW_LOCAL_STORAGE);
     return data ? JSON.parse(data) : undefined;
   }
@@ -111,7 +111,7 @@ class SessionStorage {
     this.#pluginID = pluginID;
   }
 
-  get(): StoredItem['value'] | undefined {
+  get(): Record<string, string> | undefined {
     const data = store.getString(this.#pluginID + WEBVIEW_SESSION_STORAGE);
     return data ? JSON.parse(data) : undefined;
   }

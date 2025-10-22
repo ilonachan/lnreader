@@ -10,11 +10,11 @@ export const isRepoUrlDuplicated = (repoUrl: string) =>
     repoUrl,
   )?.isDuplicated || 0) > 0;
 
-export const createRepository = (repoUrl: string) =>
-  db.runSync('INSERT INTO Repository (url) VALUES (?)', repoUrl);
+export const createRepository = (repo: Omit<Repository, 'id'>) =>
+  db.runSync('INSERT INTO Repository (url, enabled) VALUES (?, ?)', repo.url, repo.enabled);
 
 export const deleteRepositoryById = (id: number) =>
   db.runSync('DELETE FROM Repository WHERE id = ?', id);
 
-export const updateRepository = (id: number, url: string) =>
-  db.runSync('UPDATE Repository SET url = ? WHERE id = ?', url, id);
+export const updateRepository = (repo: Repository) =>
+  db.runSync('UPDATE Repository SET url = ?, enabled = ? WHERE id = ?', repo.url, repo.enabled, repo.id);

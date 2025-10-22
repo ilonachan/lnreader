@@ -45,23 +45,27 @@ const SettingsBrowseScreen = ({
     setFalse: closeAddRepositoryModal,
   } = useBoolean();
 
+  type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
   const upsertRepository = useCallback(
-    (repositoryUrl: string, repository?: Repository) => {
+    (repository: Optional<Repository, 'id'> | string) => {
+      if(typeof repository === 'string') 
+        repository = { url: repository, enabled: true };
+      repository = repository as Optional<Repository, 'id'>;
+
       if (
-        !new RegExp(/https?:\/\/(.*)plugins\.min\.json/).test(repositoryUrl)
+        !new RegExp(/https?:\/\/(.*)plugins\.min\.json/).test(repository.url)
       ) {
         showToast('Repository URL is invalid');
         return;
       }
 
-      if (isRepoUrlDuplicated(repositoryUrl)) {
+      if (isRepoUrlDuplicated(repository.url)) {
         showToast('A respository with this url already exists!');
       } else {
-        if (repository) {
-          updateRepository(repository.id, repositoryUrl);
-        } else {
-          createRepository(repositoryUrl);
-        }
+        if('id' in repository)
+          updateRepository(repository as Repository);
+        else
+          createRepository(repository);
         getRepositories();
         refreshPlugins();
       }

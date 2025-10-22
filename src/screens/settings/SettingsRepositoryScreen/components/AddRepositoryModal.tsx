@@ -9,11 +9,12 @@ import { useTheme } from '@hooks/persisted';
 
 import { getString } from '@strings/translations';
 
+type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 interface AddRepositoryModalProps {
   repository?: Repository;
   visible: boolean;
   closeModal: () => void;
-  upsertRepository: (repositoryUrl: string, repository?: Repository) => void;
+  upsertRepository: (repository: Optional<Repository, 'id'> | string) => void;
 }
 
 const AddRepositoryModal: React.FC<AddRepositoryModalProps> = ({
@@ -44,7 +45,7 @@ const AddRepositoryModal: React.FC<AddRepositoryModalProps> = ({
           <Button
             title={getString(repository ? 'common.ok' : 'common.add')}
             onPress={() => {
-              upsertRepository(repositoryUrl, repository);
+              upsertRepository(repository ? {...repository, url: repositoryUrl} : repositoryUrl);
               closeModal();
             }}
           />
